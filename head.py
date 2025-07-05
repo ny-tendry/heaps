@@ -30,6 +30,20 @@ class Heap:
 
     def get_heap(self):
         return self.heap
+    
+    def peek(self):
+        """Retourne l'élément maximum sans le retirer"""
+        if self.heap:
+            return self.heap[0]
+        return None  # ou lever une exception
+
+    def size(self):
+        """Retourne le nombre d'éléments dans le tas"""
+        return len(self.heap)
+
+    def is_empty(self):
+        """Vérifie si le tas est vide"""
+        return len(self.heap) == 0
 
 
 # Exemple d'utilisation
@@ -38,3 +52,6 @@ if __name__ == "__main__":
     h.create_heap()
     h.build_heap([4, 10, 3, 5, 1])
     print("Tas construit:", h.get_heap())
+    print("Max (peek):", h.peek())
+    print("Taille:", h.size())
+    print("Est vide ?", h.is_empty())

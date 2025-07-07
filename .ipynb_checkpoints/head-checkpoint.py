@@ -45,22 +45,14 @@ class Heap:
         """Vérifie si le tas est vide"""
         return len(self.heap) == 0
     
-# créer une fonction execute pour faciliter la création de heap lors de l'insertion des nombre un à un
-def execute(self):
+
+
+# Exemple d'utilisation
+if __name__ == "__main__":
     h = Heap()
     h.create_heap()
-    h.build_heap(self)
-    print("\nTas construit:", h.get_heap())
+    h.build_heap([4, 10, 3, 5, 1])
+    print("Tas construit:", h.get_heap())
     print("Max (peek):", h.peek())
     print("Taille:", h.size())
-    print("Est vide ?", h.is_empty(), "\n")
-
-def insertion_et_sift_up():
-    liste = []
-    while True:
-        print("Entrer un nombre:")
-        element = input()
-        if element != "": 
-            liste.append(int(element))
-            execute(liste)
-insertion_et_sift_up()
+    print("Est vide ?", h.is_empty())

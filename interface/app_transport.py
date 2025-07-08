@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from modele.demande import DemandeTransport
-from interface.reservation import afficher_reservation_popup  # Module popup QR
-from db_transport import ajouter_reservation  # Sauvegarde dans SQLite
+from interface.reservation import afficher_reservation_popup  # Popup QR
 
 class ApplicationTransport(tk.Tk):
     def __init__(self, gestion_transport, gestion_vehicules, trajets, bus_ids):
@@ -17,13 +16,14 @@ class ApplicationTransport(tk.Tk):
 
         self.itineraire_var = tk.StringVar(value="Choisir le trajet")
         self.bus_var = tk.StringVar(value="Choisissez votre Bus")
-        self.date_depart_var = tk.StringVar(value="07/07/2025")
+        self.date_depart_var = tk.StringVar(value="08/07/2025")
         self.heure_depart_var = tk.StringVar(value="08:30")
         self.places_selectionnees = []
         self.reservation_count = 0
 
         self.creer_interface()
 
+    # Bloc A : Interface utilisateur
     def creer_interface(self):
         main_frame = tk.Frame(self)
         main_frame.pack(pady=10)
@@ -56,6 +56,7 @@ class ApplicationTransport(tk.Tk):
         self.itineraire_var.trace_add("write", lambda *args: self.mettre_a_jour_place())
         self.mettre_a_jour_place()
 
+    # Bloc E : mise à jour visuelle des places
     def mettre_a_jour_place(self):
         for widget in self.places_frame.winfo_children():
             widget.destroy()
@@ -84,6 +85,7 @@ class ApplicationTransport(tk.Tk):
                     btn.config(command=lambda n=nom: self.selectionner_place(n))
                 self.place_buttons[nom] = btn
 
+    # Bloc E : sélection des places
     def selectionner_place(self, nom):
         btn = self.place_buttons[nom]
         if btn["bg"] == "green":
@@ -93,6 +95,7 @@ class ApplicationTransport(tk.Tk):
             btn.config(bg="green")
             self.places_selectionnees.remove(nom)
 
+    # Bloc F : validation et confirmation
     def reserver(self):
         trajet = self.itineraire_var.get()
         bus_id = self.bus_var.get()
@@ -119,8 +122,11 @@ class ApplicationTransport(tk.Tk):
         self.reservation_count += 1
         reservation_id = f"R{self.reservation_count:04d}"
         demande = DemandeTransport(reservation_id, trajet, priorite=1)
+
+        # Bloc C : ajout dans le heap (file prioritaire)
         self.gestion_transport.ajouter_demande(demande)
 
+        # Récapitulatif sans base de données
         recap_dict = {
             "id": reservation_id,
             "trajet": trajet,
@@ -130,7 +136,5 @@ class ApplicationTransport(tk.Tk):
             "heure": heure
         }
 
-        ajouter_reservation(recap_dict)
-        afficher_reservation_popup(recap_dict)
-
+        afficher_reservation_popup(recap_dict, self)
         self.mettre_a_jour_place()

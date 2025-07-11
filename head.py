@@ -12,7 +12,6 @@ class Heap:
 
         if left < n and self.heap[left] > self.heap[largest]:
             largest = left
-
         if right < n and self.heap[right] > self.heap[largest]:
             largest = right
 
@@ -23,8 +22,6 @@ class Heap:
     def build_heap(self, array):
         self.heap = array[:]
         n = len(self.heap)
-        
-        # Commencer par le dernier noeud parent
         for i in range(n // 2 - 1, -1, -1):
             self.heapify(n, i)
 
@@ -32,74 +29,46 @@ class Heap:
         return self.heap
 
     def peek(self):
-        """Retourne l'élément maximum sans le retirer"""
-        if self.heap:
-            return self.heap[0]
-        return None  # ou lever une exception
+        return self.heap[0] if self.heap else None
 
     def size(self):
-        """Retourne le nombre d'éléments dans le tas"""
         return len(self.heap)
 
     def is_empty(self):
-        """Vérifie si le tas est vide"""
         return len(self.heap) == 0
 
-    # Ajout:sift_down(reutilisable pour suppression)
-    def sift_down(self, i):
+    def _sift_down(self, index):
+        
         n = len(self.heap)
         while True:
-            left = 2 * i + 1
-            right = 2 * i + 2
-            largest = i
+            left = 2 * index + 1
+            right = 2 * index + 2
+            largest = index
 
+            # Vérifie si le fils gauche est plus grand que l'élément courant
             if left < n and self.heap[left] > self.heap[largest]:
                 largest = left
+            # Vérifie si le fils droit est plus grand que le plus grand actuel
             if right < n and self.heap[right] > self.heap[largest]:
                 largest = right
 
-            if largest != i:
-                self.heap[i], self.heap[largest] = self.heap[largest], self.heap[i]
-                i = largest
-            else:
+            # Si l'élément courant est déjà le plus grand, on arrête
+            if largest == index:
                 break
 
-    # Ajout:extract_max
-    def extract_max(self):
-        if self.is_empty():
-            return None
+            # Sinon, on échange et on continue à tamiser vers le bas
+            self.heap[index], self.heap[largest] = self.heap[largest], self.heap[index]
+            index = largest
 
-        max_value = self.heap[0]
-        self.heap[0] = self.heap[-1]
-        self.heap.pop()
-        self.sift_down(0)
-        return max_value
-    
-# créer une fonction execute pour faciliter la création de heap lors de l'insertion des nombre un à un    
-def execute(self):
-    h = Heap()
-    h.create_heap()
-    h.build_heap(self)
-    print("\nTas construit:", h.get_heap())
-    print("Max (peek):", h.peek())
-    print("Taille:", h.size())
-    print("Est vide ?", h.is_empty(), "\n")
+    def replace_max(self, new_element):
+        
+        if not self.heap:
+            raise IndexError("Le tas est vide.")
 
-def insertion_et_sift_up():
-    liste = []
-    while True:
-        print("Entrer un nombre (ou 's' pour supprimer le max, ou vide pour quitter):")
-        element = input()
-        if element == "":
-            break
-        elif element.lower() == "s":
-            h = Heap()
-            h.build_heap(liste)
-            removed = h.extract_max()
-            liste = h.get_heap()
-            print(f"Max supprimé: {removed}")
-            print("Tas après suppression:", liste)
-        else:
-            liste.append(int(element))
-            execute(liste)
-insertion_et_sift_up()    
+        max_element = self.heap[0]  # Sauvegarde de l'ancien maximum
+        self.heap[0] = new_element  # Remplacement par le nouvel élément
+        self._sift_down(0)          # Réorganisation du tas
+        return max_element          # Retourne l'ancien maximum
+
+
+
